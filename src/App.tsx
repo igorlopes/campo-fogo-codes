@@ -9,6 +9,8 @@ function App() {
   const { data, error, handleFileUpload } = useSpreadsheetReader();
   const [customText, setCustomText] = useState<string>('Prêmio de Resgate!');
   const [titleText, setTitleText] = useState<string>('Escaneie para resgatar');
+  const [useIncrementalCode, setUseIncrementalCode] = useState<boolean>(false);
+  const [incrementalPrefix, setIncrementalPrefix] = useState<string>('CARD-');
 
   const handlePrint = () => {
     window.print();
@@ -78,6 +80,30 @@ function App() {
             />
           </div>
 
+          <div className="input-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', marginBottom: '0.5rem' }}>
+            <input 
+              type="checkbox" 
+              id="useIncremental"
+              checked={useIncrementalCode}
+              onChange={(e) => setUseIncrementalCode(e.target.checked)}
+              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+            />
+            <label htmlFor="useIncremental" style={{ margin: 0, cursor: 'pointer' }}>Numeração incremental no cartão</label>
+          </div>
+
+          {useIncrementalCode && (
+            <div className="input-group">
+              <label>Prefixo Numeração</label>
+              <input 
+                type="text" 
+                className="input-field" 
+                value={incrementalPrefix} 
+                onChange={(e) => setIncrementalPrefix(e.target.value)}
+                placeholder="Ex: CARD-"
+              />
+            </div>
+          )}
+
           <div style={{ marginTop: '2rem' }}>
             <button 
               className="btn" 
@@ -98,6 +124,11 @@ function App() {
           {data.map((item, index) => (
             <div key={index} className="qr-card">
               <h3>{titleText}</h3>
+              {useIncrementalCode && (
+                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)', marginBottom: '0.5rem' }}>
+                  {incrementalPrefix}{String(index + 1).padStart(3, '0')}
+                </p>
+              )}
               <div className="qr-wrapper">
                 <QRCodeSVG 
                   value={`https://store.pokemongo.com/pt-BR/offer-redemption?passcode=${item.code}`} 
