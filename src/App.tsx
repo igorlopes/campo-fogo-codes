@@ -88,53 +88,57 @@ function App() {
             />
           </div>
 
-          <div className="input-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', marginBottom: '0.5rem' }}>
-            <input
-              type="checkbox"
-              id="useIncremental"
-              checked={useIncrementalCode}
-              onChange={(e) => setUseIncrementalCode(e.target.checked)}
-              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-            />
-            <label htmlFor="useIncremental" style={{ margin: 0, cursor: 'pointer' }}>Numeração incremental no cartão</label>
+          <div style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: useIncrementalCode ? '0.5rem' : '0' }}>
+              <input
+                type="checkbox"
+                id="useIncremental"
+                checked={useIncrementalCode}
+                onChange={(e) => setUseIncrementalCode(e.target.checked)}
+                style={{ width: '16px', height: '16px', cursor: 'pointer', margin: 0 }}
+              />
+              <label htmlFor="useIncremental" style={{ margin: 0, cursor: 'pointer', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-main)' }}>Numeração incremental no cartão</label>
+            </div>
+
+            {useIncrementalCode && (
+              <div className="input-group" style={{ marginBottom: 0 }}>
+                <label style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>Prefixo Numeração</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={incrementalPrefix}
+                  onChange={(e) => setIncrementalPrefix(e.target.value)}
+                  placeholder="Ex: CARD-"
+                />
+              </div>
+            )}
           </div>
 
-          {useIncrementalCode && (
-            <div className="input-group">
-              <label>Prefixo Numeração</label>
+          <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: useInstagram ? '0.5rem' : '0' }}>
               <input
-                type="text"
-                className="input-field"
-                value={incrementalPrefix}
-                onChange={(e) => setIncrementalPrefix(e.target.value)}
-                placeholder="Ex: CARD-"
+                type="checkbox"
+                id="useInstagram"
+                checked={useInstagram}
+                onChange={(e) => setUseInstagram(e.target.checked)}
+                style={{ width: '16px', height: '16px', cursor: 'pointer', margin: 0 }}
               />
+              <label htmlFor="useInstagram" style={{ margin: 0, cursor: 'pointer', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-main)' }}>Exibir @ do Instagram no cartão</label>
             </div>
-          )}
 
-          <div className="input-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', marginBottom: '0.5rem' }}>
-            <input
-              type="checkbox"
-              id="useInstagram"
-              checked={useInstagram}
-              onChange={(e) => setUseInstagram(e.target.checked)}
-              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-            />
-            <label htmlFor="useInstagram" style={{ margin: 0, cursor: 'pointer' }}>Exibir @ do Instagram no cartão</label>
+            {useInstagram && (
+              <div className="input-group" style={{ marginBottom: 0 }}>
+                <label style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>Seu @ no Instagram</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={instagramHandle}
+                  onChange={(e) => setInstagramHandle(e.target.value)}
+                  placeholder="Ex: @meuinstagram"
+                />
+              </div>
+            )}
           </div>
-
-          {useInstagram && (
-            <div className="input-group">
-              <label>Seu @ no Instagram</label>
-              <input
-                type="text"
-                className="input-field"
-                value={instagramHandle}
-                onChange={(e) => setInstagramHandle(e.target.value)}
-                placeholder="Ex: @meuinstagram"
-              />
-            </div>
-          )}
 
           <div style={{ marginTop: '2rem' }}>
             <button
