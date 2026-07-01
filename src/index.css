@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
+  --primary: #e3350d;
+  --primary-hover: #c82a09;
   --bg-color: #f8fafc;
   --surface: #ffffff;
   --text-main: #0f172a;
@@ -50,7 +50,7 @@ body {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--text-main);
-  background: linear-gradient(135deg, var(--primary), #a855f7);
+  background: linear-gradient(135deg, var(--primary), #ffcb05);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
@@ -131,7 +131,7 @@ body {
 .input-field:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 3px rgba(227, 53, 13, 0.2);
 }
 
 /* File Upload Zone */
@@ -142,7 +142,7 @@ body {
   text-align: center;
   cursor: pointer;
   transition: var(--transition);
-  background-color: rgba(99, 102, 241, 0.02);
+  background-color: rgba(227, 53, 13, 0.02);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -150,7 +150,7 @@ body {
 }
 
 .upload-zone:hover {
-  background-color: rgba(99, 102, 241, 0.05);
+  background-color: rgba(227, 53, 13, 0.05);
   border-color: var(--primary-hover);
 }
 
