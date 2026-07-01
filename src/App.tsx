@@ -148,7 +148,7 @@ function App() {
               <h3>{titleText}</h3>
               <div className="qr-wrapper">
                 <QRCodeSVG 
-                  value={item.code} 
+                  value={`https://store.pokemongo.com/pt-BR/offer-redemption?passcode=${item.code}`} 
                   size={120}
                   level="M"
                   includeMargin={false}
