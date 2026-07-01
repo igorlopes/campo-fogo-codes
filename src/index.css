@@ -172,22 +172,20 @@ body {
 
 .qr-card {
   background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 12px;
+  border: 1px dashed #94a3b8;
+  border-radius: 0;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 1rem;
-  box-shadow: var(--shadow);
+  gap: 0.8rem;
   transition: var(--transition);
   page-break-inside: avoid;
 }
 
 .qr-card:hover {
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-2px);
+  background-color: #f8fafc;
 }
 
 .qr-card h3 {
@@ -205,9 +203,7 @@ body {
 
 .qr-wrapper {
   background: white;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  padding: 0.5rem;
 }
 
 /* Print Specific Rules */
@@ -227,24 +223,27 @@ body {
   }
 
   .cards-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
     margin: 0;
+    padding: 1px 0 0 1px; /* Compensa as margens negativas dos filhos */
   }
 
   .qr-card {
-    border: 1px solid #ccc;
+    border: 1px dashed #94a3b8;
     box-shadow: none;
-    border-radius: 8px;
-    width: calc(33.333% - 15px); /* 3 cards por linha no A4 */
-    margin-bottom: 10px;
-    padding: 1rem;
+    border-radius: 0;
+    width: auto;
+    margin-bottom: 0;
+    margin-top: -1px;
+    margin-left: -1px;
+    padding: 2.5rem 1.5rem;
+    background-color: white;
   }
 
   .qr-card:hover {
     transform: none;
-    box-shadow: none;
+    background-color: white;
   }
 }
