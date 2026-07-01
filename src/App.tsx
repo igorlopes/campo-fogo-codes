@@ -7,12 +7,12 @@ import './index.css';
 
 function App() {
   const { data, error, handleFileUpload } = useSpreadsheetReader();
-  const [customText, setCustomText] = useState<string>('Prêmio de Resgate!');
-  const [titleText, setTitleText] = useState<string>('Escaneie para resgatar');
+  const [customText, setCustomText] = useState<string>('');
+  const [titleText, setTitleText] = useState<string>('');
   const [useIncrementalCode, setUseIncrementalCode] = useState<boolean>(false);
-  const [incrementalPrefix, setIncrementalPrefix] = useState<string>('CARD-');
+  const [incrementalPrefix, setIncrementalPrefix] = useState<string>('');
   const [useInstagram, setUseInstagram] = useState<boolean>(false);
-  const [instagramHandle, setInstagramHandle] = useState<string>('@meuinstagram');
+  const [instagramHandle, setInstagramHandle] = useState<string>('');
 
   const handlePrint = () => {
     window.print();
