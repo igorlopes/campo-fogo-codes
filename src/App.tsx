@@ -1,0 +1,168 @@
+import React, { useState, useCallback } from 'react';
+import * as XLSX from 'xlsx';
+import { QRCodeSVG } from 'qrcode.react';
+import { UploadCloud, Printer, Settings } from 'lucide-react';
+import './App.css'; // Emptied out
+import './index.css';
+
+interface QRCodeData {
+  code: string;
+}
+
+function App() {
+  const [data, setData] = useState<QRCodeData[]>([]);
+  const [customText, setCustomText] = useState<string>('Prêmio de Resgate!');
+  const [titleText, setTitleText] = useState<string>('Escaneie para resgatar');
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setError(null);
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        
+        // Convert to JSON. Assuming the first column or any column contains the codes.
+        // We will just read row by row and take the first cell's value as the code.
+        const jsonData = XLSX.utils.sheet_to_json<any>(ws, { header: 1 });
+        
+        const extractedData: QRCodeData[] = [];
+        
+        // Skip header if needed, but let's just take all non-empty first column values
+        jsonData.forEach((row) => {
+          if (row && row.length > 0) {
+            const firstCell = String(row[0]).trim();
+            if (firstCell && firstCell.length > 0) {
+              extractedData.push({ code: firstCell });
+            }
+          }
+        });
+
+        if (extractedData.length === 0) {
+          setError('Nenhum dado encontrado na primeira coluna da planilha.');
+        } else {
+          setData(extractedData);
+        }
+      } catch (err) {
+        setError('Erro ao ler a planilha. Certifique-se de que é um arquivo Excel (.xlsx) ou CSV válido.');
+        console.error(err);
+      }
+    };
+    reader.readAsBinaryString(file);
+  }, []);
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <div className="app-container">
+      <header className="header no-print">
+        <h1>Gerador de Cartões QR</h1>
+        <p>Crie cartões de resgate a partir de uma planilha e imprima em PDF.</p>
+      </header>
+
+      {/* Control Panel - Hidden when printing */}
+      <div className="no-print" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        
+        {/* Upload Section */}
+        <div className="card-panel">
+          <div className="input-group" style={{ marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+              <UploadCloud size={20} className="upload-icon" style={{ width: 24, height: 24 }} /> 
+              Importar Planilha
+            </h2>
+            <label className="upload-zone">
+              <UploadCloud className="upload-icon" />
+              <span>Clique ou arraste sua planilha (.xlsx, .csv)</span>
+              <input 
+                type="file" 
+                accept=".xlsx, .xls, .csv" 
+                onChange={handleFileUpload} 
+                style={{ display: 'none' }} 
+              />
+            </label>
+            {error && <p style={{ color: 'var(--danger)', marginTop: '1rem', fontSize: '0.9rem' }}>{error}</p>}
+            {data.length > 0 && (
+              <p style={{ color: 'var(--primary)', marginTop: '1rem', fontWeight: 500 }}>
+                ✅ {data.length} códigos carregados!
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Configuration Section */}
+        <div className="card-panel">
+          <h2 style={{ fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+            <Settings size={20} /> Configuração do Cartão
+          </h2>
+          
+          <div className="input-group">
+            <label>Título do Cartão</label>
+            <input 
+              type="text" 
+              className="input-field" 
+              value={titleText} 
+              onChange={(e) => setTitleText(e.target.value)}
+              placeholder="Ex: Escaneie para resgatar"
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Subtítulo / Descrição</label>
+            <input 
+              type="text" 
+              className="input-field" 
+              value={customText} 
+              onChange={(e) => setCustomText(e.target.value)}
+              placeholder="Ex: Prêmio de Resgate!"
+            />
+          </div>
+
+          <div style={{ marginTop: '2rem' }}>
+            <button 
+              className="btn" 
+              onClick={handlePrint} 
+              disabled={data.length === 0}
+              style={{ width: '100%', opacity: data.length === 0 ? 0.5 : 1, cursor: data.length === 0 ? 'not-allowed' : 'pointer' }}
+            >
+              <Printer size={20} />
+              Imprimir / Salvar PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Cards Grid - Visible when printing */}
+      {data.length > 0 && (
+        <div className="cards-grid">
+          {data.map((item, index) => (
+            <div key={index} className="qr-card">
+              <h3>{titleText}</h3>
+              <div className="qr-wrapper">
+                <QRCodeSVG 
+                  value={item.code} 
+                  size={120}
+                  level="M"
+                  includeMargin={false}
+                />
+              </div>
+              <p>{customText}</p>
+              {/* Opção para mostrar o código de resgate embaixo em texto bem pequeno */}
+              <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.5rem' }}>{item.code}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
