@@ -1,62 +1,14 @@
-import React, { useState, useCallback } from 'react';
-import * as XLSX from 'xlsx';
+import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { UploadCloud, Printer, Settings } from 'lucide-react';
+import { useSpreadsheetReader } from './hooks/useSpreadsheetReader';
 import './App.css'; // Emptied out
 import './index.css';
 
-interface QRCodeData {
-  code: string;
-}
-
 function App() {
-  const [data, setData] = useState<QRCodeData[]>([]);
+  const { data, error, handleFileUpload } = useSpreadsheetReader();
   const [customText, setCustomText] = useState<string>('Prêmio de Resgate!');
   const [titleText, setTitleText] = useState<string>('Escaneie para resgatar');
-  const [error, setError] = useState<string | null>(null);
-
-  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setError(null);
-
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const bstr = evt.target?.result;
-        const wb = XLSX.read(bstr, { type: 'binary' });
-        const wsname = wb.SheetNames[0];
-        const ws = wb.Sheets[wsname];
-        
-        // Convert to JSON. Assuming the first column or any column contains the codes.
-        // We will just read row by row and take the first cell's value as the code.
-        const jsonData = XLSX.utils.sheet_to_json<any>(ws, { header: 1 });
-        
-        const extractedData: QRCodeData[] = [];
-        
-        // Skip header if needed, but let's just take all non-empty first column values
-        jsonData.forEach((row) => {
-          if (row && row.length > 0) {
-            const firstCell = String(row[0]).trim();
-            if (firstCell && firstCell.length > 0) {
-              extractedData.push({ code: firstCell });
-            }
-          }
-        });
-
-        if (extractedData.length === 0) {
-          setError('Nenhum dado encontrado na primeira coluna da planilha.');
-        } else {
-          setData(extractedData);
-        }
-      } catch (err) {
-        setError('Erro ao ler a planilha. Certifique-se de que é um arquivo Excel (.xlsx) ou CSV válido.');
-        console.error(err);
-      }
-    };
-    reader.readAsBinaryString(file);
-  }, []);
 
   const handlePrint = () => {
     window.print();
